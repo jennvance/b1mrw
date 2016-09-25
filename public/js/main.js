@@ -5,7 +5,7 @@ angular.module('app')
 		var s = $scope;
 		s.test = "Hi Jenn";
 		//not necessary, but semantically useful
-		//s.user = {};
+		s.user = {};
 		s.users=[];
 
 		s.User = function(user){
@@ -19,9 +19,31 @@ angular.module('app')
 		
 
 		s.submitLogin = function(){
-			s.user = new s.User(s.user);
-			s.users.push(s.user)
-			console.log(s.users)
-			s.user = {};
+			//if users is empty, add new user
+			if(s.users==false){
+				console.log("users is empty; creating first item")
+				s.user = new s.User(s.user);
+				s.users.push(s.user)
+				s.user = {};
+			} else {
+				//search users for name that matches
+				for(var i=0;i<s.users.length; i++){
+					//if you find a match
+					if(s.users[i].name === s.user.name){
+						console.log("user exists, displaying data")
+						//display data and return out of the for loop
+						console.log(i + " name: " + s.user.name)
+						return false;
+					}
+				}
+				//if get to end of loop and no match, add new user
+				console.log("user doesn't exist, adding user to populated array")
+				s.user = new s.User(s.user);
+				s.users.push(s.user)
+				s.user = {};
+			}
+
+
+
 		}
 	}])
