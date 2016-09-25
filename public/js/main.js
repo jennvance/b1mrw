@@ -9,9 +9,46 @@ angular.module('app')
 		s.currentUser = {};
 		s.users=[];
 		s.justentered = true;
+		s.hasproject=false;
+		s.today = new Date();
+		s.project = {};
+		s.count = {};
+		s.projectList = [];
+		s.allCounts = [];
 
 		s.User = function(user){
 			this.name = user.name;
+		}
+
+		s.Project = function(project, user){
+			//this._id = #randomnumber;
+			this.ownerId = user.name;
+			this.name = project.name;
+			this.wordGoal = project.wordGoal;
+			this.date = project.date;
+		}
+
+		s.Count =function(count, project){
+			this.owner = project.ownerId;
+			//this.projectId = project._id;
+			this.date = count.date;
+			this.wordCount = count.wordCount;
+		}
+
+		s.submitProject = function(){
+			s.hasproject = true;
+			s.currentProject = new s.Project(s.project, s.currentUser);
+			console.log(s.currentProject)
+			s.projectList.push(s.currentProject)
+			console.log(s.projectList)
+			s.project = {};
+		}
+
+		s.submitCount = function(){
+			s.count = new s.Count(s.count, s.currentProject);
+			s.allCounts.push(s.count);
+			console.log(s.allCounts)
+			s.count = {};
 		}
 
 
@@ -53,8 +90,8 @@ angular.module('app')
 				s.user = {};
 				s.justentered = false;
 			}
-
-
-
 		}
+
+
+
 	}])
