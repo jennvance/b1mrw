@@ -1,0 +1,35 @@
+h3 {
+	color: ghostwhite;
+	text-transform: uppercase;
+}
+
+ul {
+	list-style-type: none;
+	-webkit-padding-start: 0;
+}
+
+/*.count-form input {
+	width: 250px;
+	margin: 0 auto;
+}*/
+
+.centered-panel {
+	text-align: center;
+	background-color: tomato;
+	padding: 5%;
+}
+/*.display-count {
+
+}
+
+.display-count p {
+	display: inline-block;
+	width: 100px;
+}
+
+.display-count p:first-child {
+
+}
+.display-count p:last-child {
+
+}*/

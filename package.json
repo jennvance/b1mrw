@@ -1,0 +1,16 @@
+{
+  "name": "B1M",
+  "version": "0.0.1",
+  "description": "Community to encourage more people to write, and eventually write well",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "J. Vance",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.14.1",
+    "express": "^4.13.3",
+    "morgan": "^1.7.0"
+  }
+}
