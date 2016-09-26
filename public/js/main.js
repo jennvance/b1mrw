@@ -39,7 +39,7 @@ angular.module('app')
 		}
 
 		s.Project = function(project, user){
-			//this._id = #randomnumber;
+			this._id = project._id;
 			this.ownerId = user.name;
 			this.name = project.name;
 			this.startDate = new Date();
@@ -49,20 +49,41 @@ angular.module('app')
 
 		s.Count =function(count, project){
 			this.owner = project.ownerId;
-			//this.projectId = project._id;
+			this.projectId = project._id;
 			this.date = count.date;
 			this.wordCount = count.wordCount;
 		}
+//Helper functions for date calculations
+		function standardizeToUTC(date) {
+			var result = new Date(date);
+			result.setMinutes(result.getMinutes() - result.getTimezoneOffset());
+			return result;
+		}
 
-//Calculation functions
-		s.calcAllTimeTotal = function(){
+		s.daysBetween = function(startDate, endDate) {
+			var millisecondsPerDay = 24 * 60 * 60 * 1000;
+			return (standardizeToUTC(endDate) - standardizeToUTC(startDate)) / millisecondsPerDay;
+		}
+
+		Date.prototype.areDatesSame = function(date) {
+		  return (
+		    this.getFullYear() === date.getFullYear() &&
+		    this.getMonth() === date.getMonth() &&
+		    this.getDate() === date.getDate()
+		  );
+		}
+
+
+//Calculation functions ACROSS ALL USERS
+		//not currently called anywhere, but FFR; need to change variable name
+		s.calcAllTimeTotalAllUsers = function(){
 			s.allTimeTotal = 0;
 			for(var i=0; i<s.allCounts.length; i++){
 				s.allTimeTotal += s.allCounts[i].wordCount;
 			}
 		}
 
-		s.calcYearTotal = function(whichYear){
+		s.calcYearTotalAllUsers = function(whichYear){
 			s.currentYearTotal = 0;
 			for(var i=0; i<s.allCounts.length; i++){
 				var yr = s.allCounts[i].date.getFullYear();
@@ -71,7 +92,7 @@ angular.module('app')
 				}
 			}
 		}
-		s.calcMonthTotal = function(whichMonth){
+		s.calcMonthTotalAllUsers = function(whichMonth){
 			s.currentMonthTotal = 0;
 			for (var i=0; i<s.allCounts.length; i++){
 				var mo = s.allCounts[i].date.getMonth();
@@ -118,28 +139,90 @@ angular.module('app')
 			}
 			s.avgWordsPerDayMonth = Math.round(s.currentMonthTotal/numDays);
 		}
+
+		s.calcDaysUntilGoal = function(){
+			s.daysUntilGoal = s.daysBetween(s.today, s.currentProject.endDate)
+			console.log("days until goal: " + s.daysUntilGoal)
+		}
+
+		s.calcCurrentGoalWordCount = function(){
+			s.currentGoalWordCount = 0;
+			for(var i=0; i<s.allCounts.length; i++){
+				if(s.allCounts[i].projectId ===s.currentProject._id){
+					s.currentGoalWordCount += s.allCounts[i].wordCount;
+					console.log("goal word count: " + s.currentGoalWordCount)
+				}
+			}
+		}
+
+		s.calcWordsUntilGoal = function(){
+			s.wordsUntilGoal = 0;
+			s.wordsUntilGoal = s.currentProject.wordGoal - s.currentGoalWordCount;
+			console.log(s.wordsUntilGoal)
+			s.wordsPerDayToMeetGoal = 0;
+			s.wordsPerDayToMeetGoal = Math.round(s.wordsUntilGoal / s.daysUntilGoal);
+			console.log(s.wordsPerDayToMeetGoal)
+		}
+		//works, but cant use it until data persists because otherwise startDate and today are always the same
+		// s.calcWpdSinceStartingGoal = function(){
+		// 	//do I need to initialize here or wait to declare it two lines below?
+		// 	s.wordsPerDaySinceStartingGoal = 0;
+		// 	s.daysSinceGoalBegan = Math.round(s.daysBetween(s.currentProject.startDate, s.today));
+		// 	s.wordsPerDaySinceStartingGoal = s.currentGoalWordCount / s.daysSinceGoalBegan;
+		// }
 		
 
+//Calculation functions FOR ONE USER
 
-//Helper functions for date calculations
-		function standardizeToUTC(date) {
-			var result = new Date(date);
-			result.setMinutes(result.getMinutes() - result.getTimezoneOffset());
-			return result;
+		s.calcAllTimeTotal = function(){
+		s.allTimeTotal = 0;
+			for(var i=0; i<s.allCounts.length; i++){
+				if(s.allCounts[i].owner === s.currentUser.name){
+					s.allTimeTotal += s.allCounts[i].wordCount;
+				}
+			}
 		}
 
-		s.daysBetween = function(startDate, endDate) {
-			var millisecondsPerDay = 24 * 60 * 60 * 1000;
-			return (standardizeToUTC(endDate) - standardizeToUTC(startDate)) / millisecondsPerDay;
+
+		s.calcYearTotal = function(whichYear){
+			s.currentYearTotal = 0;
+			for(var i=0; i<s.allCounts.length; i++){
+				var yr = s.allCounts[i].date.getFullYear();
+				if(yr === whichYear){
+					if(s.allCounts[i].owner === s.currentUser.name){
+						s.currentYearTotal += s.allCounts[i].wordCount;
+					}
+				}
+			}
+		}
+		s.calcMonthTotal = function(whichMonth){
+			s.currentMonthTotal = 0;
+			for (var i=0; i<s.allCounts.length; i++){
+				var mo = s.allCounts[i].date.getMonth();
+				if(mo === whichMonth){
+					if(s.allCounts[i].owner === s.currentUser.name){
+						s.currentMonthTotal += s.allCounts[i].wordCount;
+					}
+				}
+			}
 		}
 
-		Date.prototype.areDatesSame = function(date) {
-		  return (
-		    this.getFullYear() === date.getFullYear() &&
-		    this.getMonth() === date.getMonth() &&
-		    this.getDate() === date.getDate()
-		  );
+
+
+		s.calculateStats = function(){
+			s.calcAllTimeTotal();
+			s.calcYearTotal(2016);
+			s.calcMonthTotal(8);
+			s.calcWpdAllTime();
+			s.calcWpdYear();
+			s.calcWpdMonth();
+			s.calcCurrentGoalWordCount();
+			s.calcDaysUntilGoal();
+			s.calcWordsUntilGoal();
+			//s.calcWpdSinceStartingGoal();
 		}
+
+
 		
 //Form submission functions
 
@@ -165,24 +248,46 @@ angular.module('app')
 				s.count = {};
 				s.count.date = new Date();	
 			}
-			s.calcAllTimeTotal();
-			s.calcYearTotal(2016);
-			s.calcMonthTotal(8);
-			s.calcWpdAllTime();
-			s.calcWpdYear();
-			s.calcWpdMonth();
+			s.calculateStats();
 		}
 
+		s.selectProject = function(){
+			s.selectData = {
+				model: null,
+				options: []
+			}
+			for(var i=0; i<s.projectList.length; i++){
+				if(s.currentUser.name === s.projectList[i].ownerId){
+					s.selectData.options.push(s.projectList[i])
+				}
+				console.log(s.selectData.options)
+			}
+
+		}
+
+		s.updateUI = function(proj){
+			console.log(proj)
+			for(var i=0; i<s.selectData.options.length; i++){
+				console.log(s.selectData.options[i])
+				if(proj === s.selectData.options[i]._id){
+					s.currentProject = s.selectData.options[i]
+					s.calculateStats();
+					//calculateStats does NOT update the UI, including the project name. Need to figure out how to re-render UI
+				}
+			}
+		}
 
 		s.submitProject = function(){
 			s.showcountform = true;
+			s.project._id = Math.random()
 			s.currentProject = new s.Project(s.project, s.currentUser);
 			console.log(s.currentProject)
 			s.projectList.push(s.currentProject)
 			console.log(s.projectList)
 			s.project = {};
 			s.showprojectform = false;
-			
+			s.calculateStats();
+			s.selectProject();
 		}
 		
 
@@ -207,6 +312,18 @@ angular.module('app')
 						s.currentUser = s.user;
 						s.user = {};
 						console.log("currentUser: " + s.currentUser)
+						for(var j=0;j<s.projectList.length; j++){
+							if(s.projectList[j].ownerId === s.currentUser.name){
+								s.currentProject=s.projectList[j];
+								s.calculateStats();
+								s.selectProject();
+								s.showprojectform = false;
+								s.showcountform = true;
+								//return false only works if currentUser has only one project
+								//need way to show all projects and let user select which on to work on
+								return false;
+							} 
+						}
 						s.showloginform=false;
 						s.showprojectform = true;
 						return false;
