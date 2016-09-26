@@ -12,49 +12,50 @@
 			<div class="col-md-3"></div>
 			<div class="col-md-6">
 				<div class="centered-panel">
-					<div ng-show="justentered">
+					<div ng-show="showloginform">
 						<h2>Welcome, user! Enter your name to get started.</h2>
 						<h3>{{test}}</h3>
 						<form name="loginForm" ng-submit="submitLogin()">
 							<div class="form-group">
-								<input class="form-control" type="text" placeholder="Your Name" ng-model="user.name">
+								<input class="form-control" type="text" placeholder="Your Name" ng-model="user.name" required="true">
 							</div>
 	 						<div class="form-group">
 								<input class="form-control" type="submit" value="Get Started">
 							</div>
 						</form>
 					</div>
-					<div ng-hide="justentered">
-						<h2 ng-hide="hasproject">Welcome, {{currentUser.name}}! You have not entered a project yet. Please enter a project.</h2>
-						<h2 ng-show="hasproject">Welcome, {{currentUser.name}}! You are currently working on {{currentUser.name}}. Please enter a word count.</h2>
-						<form name="newProjectForm" ng-submit="submitProject()" ng-hide="hasproject">
+					<div ng-show="showprojectform">
+						<h2>Welcome, {{currentUser.name}}! You have not entered a project yet. Please enter a project.</h2>
+						<form name="newProjectForm" ng-submit="submitProject()">
 							<div class="form-group">
-								<input class="form-control" type="text" placeholder="Project Name" ng-model="project.name">
+								<input class="form-control" type="text" placeholder="Project Name" ng-model="project.name" required="true">
 							</div>
 							<div class="form-group">
-								<input class="form-control" type="number" placeholder="Word Count Goal" ng-model="project.wordGoal">
+								<input class="form-control" type="number" placeholder="Word Count Goal" ng-model="project.wordGoal" required="true">
 							</div>
 							<div class="form-group">
-								<input class="form-control" type="date" ng-init="project.date=(today)" ng-model="project.date">
+								<input class="form-control" type="date" ng-init="project.date=(today)" ng-model="project.date" min="{{today | date: 'yyyy-MM-dd'}}" required="true">
 							</div>
 	 						<div class="form-group">
 								<input class="form-control" type="submit" value="Start Project">
 							</div>
 						</form>
-
-
-						<form name="addCountForm" ng-submit="submitCount()" ng-show="hasproject">
+					</div>
+					<div ng-show="showcountform">
+						<h2>Welcome, {{currentUser.name}}! You are currently working on {{currentProject.name}}. Please enter a word count.</h2>
+						<form name="addCountForm" ng-submit="submitCount()">
 							<div class="form-group">
-								<input class="form-control" type="date" ng-init="count.date=(today)" ng-model="count.date">
+								<input class="form-control" type="date" ng-model="count.date" required="true">
 							</div>
 							<div class="form-group">
-								<input class="form-control" type="number" placeholder="Number of Words" ng-model="count.wordCount">
+								<input class="form-control" type="number" placeholder="Number of Words" ng-model="count.wordCount" required="true">
 							</div>
 	 						<div class="form-group">
 								<input class="form-control" type="submit" value="Submit Word Count">
 							</div>
 						</form>
 					</div>
+
 				</div>
 			</div>
 			<div class="col-md-3"></div>

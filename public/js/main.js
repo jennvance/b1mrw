@@ -8,11 +8,15 @@ angular.module('app')
 		s.submittedUser = {};
 		s.currentUser = {};
 		s.users=[];
-		s.justentered = true;
-		s.hasproject=false;
+		s.showloginform=true;
+		s.showprojectform = false;
+		s.showcountform=false;
 		s.today = new Date();
 		s.project = {};
 		s.count = {};
+		s.count.date = new Date();
+		console.log("date: " + s.count.date)
+
 		s.projectList = [];
 		s.allCounts = [];
 
@@ -36,19 +40,50 @@ angular.module('app')
 		}
 
 		s.submitProject = function(){
-			s.hasproject = true;
+			s.showcountform = true;
 			s.currentProject = new s.Project(s.project, s.currentUser);
 			console.log(s.currentProject)
 			s.projectList.push(s.currentProject)
 			console.log(s.projectList)
 			s.project = {};
+			s.showprojectform = false;
+			
 		}
 
+		Date.prototype.areDatesSame = function(date) {
+		  return (
+		    this.getFullYear() === date.getFullYear() &&
+		    this.getMonth() === date.getMonth() &&
+		    this.getDate() === date.getDate()
+		  );
+}
+
 		s.submitCount = function(){
-			s.count = new s.Count(s.count, s.currentProject);
-			s.allCounts.push(s.count);
-			console.log(s.allCounts)
-			s.count = {};
+			console.log("date: ", s.count.date)
+			if (s.allCounts==false) {
+				s.currentCount = new s.Count(s.count, s.currentProject);
+				s.allCounts.push(s.currentCount);
+				console.log(s.allCounts)
+				s.count = {};
+				s.count.date = new Date();
+
+			} else {
+				for(var i=0; i<s.allCounts.length; i++){
+						if(s.allCounts[i].date.areDatesSame(s.count.date)){
+							console.log("same")
+						} else {
+							console.log("diff")
+						}
+				}
+				s.count = new s.Count(s.count, s.currentProject);
+				s.allCounts.push(s.count);
+				console.log(s.allCounts)
+				s.count = {};
+				s.count.date = new Date();
+
+			}
+
+
 		}
 
 
@@ -65,10 +100,11 @@ angular.module('app')
 				s.currentUser = new s.User(s.user);
 				s.users.push(s.currentUser)
 				s.user = {};
-				s.justentered = false;
+				s.showloginform=false;
+				s.showprojectform = true;
 			} else {
 				//search users for name that matches
-				for(var i=0;i<s.users.length; i++){
+				for(var i=0; i<s.users.length; i++){
 					//if you find a match
 					if(s.users[i].name === s.user.name){
 						console.log("user exists, displaying data")
@@ -77,7 +113,8 @@ angular.module('app')
 						s.currentUser = s.user;
 						s.user = {};
 						console.log("currentUser: " + s.currentUser)
-						s.justentered = false;
+						s.showloginform=false;
+						s.showprojectform = true;
 						return false;
 					}
 				}
@@ -88,7 +125,8 @@ angular.module('app')
 				s.users.push(s.currentUser)
 				
 				s.user = {};
-				s.justentered = false;
+				s.showloginform=false;
+				s.showprojectform = true;
 			}
 		}
 
