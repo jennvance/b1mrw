@@ -14,7 +14,6 @@
 				<div class="centered-panel">
 					<div ng-show="showloginform">
 						<h2>Welcome, user! Enter your name to get started.</h2>
-						<h3>{{test}}</h3>
 						<form name="loginForm" ng-submit="submitLogin()">
 							<div class="form-group">
 								<input class="form-control" type="text" placeholder="Your Name" ng-model="user.name" required="true">
@@ -57,8 +56,12 @@
 					</div>
 					<div>
 						<h3>Your Stats:</h3>
-						<h4>{{currentProject.name}}:{{allTimeTotal}}</h4>
-						<h4>Annual total:{{currentYearTotal}}</h4>
+						<h4>Project {{currentProject.name}}: {{allTimeTotal}}</h4>
+						<h4>Year total: {{currentYearTotal}}</h4>
+						<h4>Month total: {{currentMonthTotal}}</h4>
+						<h4>All time daily average: {{avgWordsPerDayAllTime}}</h4>
+						<h4>Year average: {{avgWordsPerDayYear}}</h4>
+						<h4>Month average: {{avgWordsPerDayMonth}}</h4>
 					</div>
 
 				</div>

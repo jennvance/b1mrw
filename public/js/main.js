@@ -3,7 +3,6 @@ angular.module('app', []);
 angular.module('app')
 	.controller('wordCountroller', ['$scope', '$http', function($scope, $http){
 		var s = $scope;
-		s.test = "Hi Jenn";
 		//hide/show values
 		s.showloginform=true;
 		s.showprojectform = false;
@@ -22,11 +21,11 @@ angular.module('app')
 		s.allTimeTotal = 0;
 		s.currentYearTotal = 0;
 		s.currentMonthTotal = 0;
-
-		s.avgWordsPerDayAllTime
-		s.avgWordsPerDayYear
-		s.avgWordsPerDayMonth
-
+		//averages stats
+		s.avgWordsPerDayAllTime = 0;
+		s.avgWordsPerDayYear = 0;
+		s.avgWordsPerDayMonth = 0;
+		//initializing with no value = undefined; don't use
 		s.daysUntilGoal
 		s.currentGoalWordCount
 		s.wordsUntilGoal
@@ -36,14 +35,16 @@ angular.module('app')
 
 		s.User = function(user){
 			this.name = user.name;
+			this.dateSignedUp = new Date();
 		}
 
 		s.Project = function(project, user){
 			//this._id = #randomnumber;
 			this.ownerId = user.name;
 			this.name = project.name;
+			this.startDate = new Date();
 			this.wordGoal = project.wordGoal;
-			this.date = project.date;
+			this.endDate = project.date;
 		}
 
 		s.Count =function(count, project){
@@ -53,6 +54,7 @@ angular.module('app')
 			this.wordCount = count.wordCount;
 		}
 
+//Calculation functions
 		s.calcAllTimeTotal = function(){
 			s.allTimeTotal = 0;
 			for(var i=0; i<s.allCounts.length; i++){
@@ -67,20 +69,68 @@ angular.module('app')
 				if(yr === whichYear){
 					s.currentYearTotal += s.allCounts[i].wordCount;
 				}
-				console.log(s.currentYearTotal)
+			}
+		}
+		s.calcMonthTotal = function(whichMonth){
+			s.currentMonthTotal = 0;
+			for (var i=0; i<s.allCounts.length; i++){
+				var mo = s.allCounts[i].date.getMonth();
+				if(mo === whichMonth){
+					s.currentMonthTotal += s.allCounts[i].wordCount;
+				}
 			}
 		}
 
+		s.calcWpdAllTime = function(){
+			//set numDays manually just for dev testing; once user data persists will calculate daysBetween
+			var numDaysAUser = 6;
+			//var numDays = Math.ceil(s.daysBetween(s.currentUser.dateSignedUp, s.today))
+			if(numDaysAUser > 0){
+				s.avgWordsPerDayAllTime = Math.round(s.allTimeTotal/numDaysAUser);	
+			}
+		}
 
-		s.submitProject = function(){
-			s.showcountform = true;
-			s.currentProject = new s.Project(s.project, s.currentUser);
-			console.log(s.currentProject)
-			s.projectList.push(s.currentProject)
-			console.log(s.projectList)
-			s.project = {};
-			s.showprojectform = false;
-			
+		s.calcWpdYear = function(){
+			//setting year manually, will eventually be variable set by user
+			var year = 2016;
+			var firstOfYear = new Date(year, 0, 1)
+			if(year === s.today.getFullYear()){
+				var numDays = Math.ceil(s.daysBetween(firstOfYear, s.today))
+			} else {
+				var lastOfYear = new Date(year, 11, 31)
+				//add 1 to get all 365 days
+				var numDays = Math.ceil(s.daysBetween(firstOfYear, lastOfYear)) + 1;
+			}
+			s.avgWordsPerDayYear = Math.round(s.currentYearTotal/numDays);
+		}
+
+		s.calcWpdMonth = function(){
+			//setting year + month manually, will eventually be variable set by user
+			var month = 7;
+			var year = 2016;
+			var firstOfMonth = new Date(year, month, 1)
+			if(month === s.today.getMonth()){
+				var numDays = Math.ceil(s.daysBetween(firstOfMonth, s.today))
+			} else {
+				var lastOfMonth = new Date(year, month +1, 0)
+				//add 1 to get all days of month
+				var numDays = Math.ceil(s.daysBetween(firstOfMonth, lastOfMonth) +1)
+			}
+			s.avgWordsPerDayMonth = Math.round(s.currentMonthTotal/numDays);
+		}
+		
+
+
+//Helper functions for date calculations
+		function standardizeToUTC(date) {
+			var result = new Date(date);
+			result.setMinutes(result.getMinutes() - result.getTimezoneOffset());
+			return result;
+		}
+
+		s.daysBetween = function(startDate, endDate) {
+			var millisecondsPerDay = 24 * 60 * 60 * 1000;
+			return (standardizeToUTC(endDate) - standardizeToUTC(startDate)) / millisecondsPerDay;
 		}
 
 		Date.prototype.areDatesSame = function(date) {
@@ -90,6 +140,8 @@ angular.module('app')
 		    this.getDate() === date.getDate()
 		  );
 		}
+		
+//Form submission functions
 
 		s.submitCount = function(){
 			console.log("date: ", s.count.date)
@@ -115,12 +167,23 @@ angular.module('app')
 			}
 			s.calcAllTimeTotal();
 			s.calcYearTotal(2016);
+			s.calcMonthTotal(8);
+			s.calcWpdAllTime();
+			s.calcWpdYear();
+			s.calcWpdMonth();
 		}
 
 
-
-		
-
+		s.submitProject = function(){
+			s.showcountform = true;
+			s.currentProject = new s.Project(s.project, s.currentUser);
+			console.log(s.currentProject)
+			s.projectList.push(s.currentProject)
+			console.log(s.projectList)
+			s.project = {};
+			s.showprojectform = false;
+			
+		}
 		
 
 		s.submitLogin = function(){
@@ -152,15 +215,14 @@ angular.module('app')
 				//if get to end of loop and no match, add new user
 				console.log("user doesn't exist, adding user to populated array")
 				s.currentUser = new s.User(s.user);
-				console.log(s.currentUser.name)
 				s.users.push(s.currentUser)
 				
 				s.user = {};
 				s.showloginform=false;
 				s.showprojectform = true;
 			}
+			//console.log(s.currentUser)
+			
 		}
-
-
 
 	}])
