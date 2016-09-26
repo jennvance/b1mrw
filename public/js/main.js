@@ -4,21 +4,35 @@ angular.module('app')
 	.controller('wordCountroller', ['$scope', '$http', function($scope, $http){
 		var s = $scope;
 		s.test = "Hi Jenn";
-		//not necessary, but semantically useful
-		s.submittedUser = {};
-		s.currentUser = {};
-		s.users=[];
+		//hide/show values
 		s.showloginform=true;
 		s.showprojectform = false;
 		s.showcountform=false;
+		//initializing empty objects not necessary(?), but semantically useful
+		s.submittedUser = {};
+		s.currentUser = {};
+		s.users=[];
 		s.today = new Date();
 		s.project = {};
 		s.count = {};
 		s.count.date = new Date();
-		console.log("date: " + s.count.date)
-
 		s.projectList = [];
 		s.allCounts = [];
+		//wordcount stats
+		s.allTimeTotal = 0;
+		s.currentYearTotal = 0;
+		s.currentMonthTotal = 0;
+
+		s.avgWordsPerDayAllTime
+		s.avgWordsPerDayYear
+		s.avgWordsPerDayMonth
+
+		s.daysUntilGoal
+		s.currentGoalWordCount
+		s.wordsUntilGoal
+		s.wordsPerDaySinceStartingGoal
+		s.wordsPerDayToMeetGoal
+
 
 		s.User = function(user){
 			this.name = user.name;
@@ -39,6 +53,25 @@ angular.module('app')
 			this.wordCount = count.wordCount;
 		}
 
+		s.calcAllTimeTotal = function(){
+			s.allTimeTotal = 0;
+			for(var i=0; i<s.allCounts.length; i++){
+				s.allTimeTotal += s.allCounts[i].wordCount;
+			}
+		}
+
+		s.calcYearTotal = function(whichYear){
+			s.currentYearTotal = 0;
+			for(var i=0; i<s.allCounts.length; i++){
+				var yr = s.allCounts[i].date.getFullYear();
+				if(yr === whichYear){
+					s.currentYearTotal += s.allCounts[i].wordCount;
+				}
+				console.log(s.currentYearTotal)
+			}
+		}
+
+
 		s.submitProject = function(){
 			s.showcountform = true;
 			s.currentProject = new s.Project(s.project, s.currentUser);
@@ -56,7 +89,7 @@ angular.module('app')
 		    this.getMonth() === date.getMonth() &&
 		    this.getDate() === date.getDate()
 		  );
-}
+		}
 
 		s.submitCount = function(){
 			console.log("date: ", s.count.date)
@@ -77,13 +110,11 @@ angular.module('app')
 				}
 				s.count = new s.Count(s.count, s.currentProject);
 				s.allCounts.push(s.count);
-				console.log(s.allCounts)
 				s.count = {};
-				s.count.date = new Date();
-
+				s.count.date = new Date();	
 			}
-
-
+			s.calcAllTimeTotal();
+			s.calcYearTotal(2016);
 		}
 
 
