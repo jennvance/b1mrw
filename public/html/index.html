@@ -46,7 +46,7 @@
 							<div class="form-group">
 								<label for="repeatSelect"> Repeat select: </label>
 								<select name="repeatSelect" id="repeatSelect" ng-model="selectData.model"ng-change="updateUI(selectData.model)">
-								<option ng-repeat="option in selectData.options" value="{{option._id}}">{{option.name}}</option>
+								<option ng-repeat="option in selectData.options" value="{{option.name}}">{{option.name}}</option>
 								</select>
     						</div>
 							<div class="form-group">
@@ -62,7 +62,7 @@
 					</div>
 					<div>
 						<h3>Your Stats:</h3>
-						<h4 ng-model="currentProject.name">Project {{currentProject.name}}: {{allTimeTotal}}</h4>
+						<h4 ng-model="currentProject">Project {{currentProject.name}}: {{allTimeTotal}}</h4>
 						<h4>Year total: {{currentYearTotal}}</h4>
 						<h4>Month total: {{currentMonthTotal}}</h4>
 						<h4>All time daily average: {{avgWordsPerDayAllTime}}</h4>

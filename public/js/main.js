@@ -231,7 +231,6 @@ angular.module('app')
 			if (s.allCounts==false) {
 				s.currentCount = new s.Count(s.count, s.currentProject);
 				s.allCounts.push(s.currentCount);
-				console.log(s.allCounts)
 				s.count = {};
 				s.count.date = new Date();
 
@@ -260,19 +259,16 @@ angular.module('app')
 				if(s.currentUser.name === s.projectList[i].ownerId){
 					s.selectData.options.push(s.projectList[i])
 				}
-				console.log(s.selectData.options)
 			}
 
 		}
 
 		s.updateUI = function(proj){
-			console.log(proj)
 			for(var i=0; i<s.selectData.options.length; i++){
-				console.log(s.selectData.options[i])
-				if(proj === s.selectData.options[i]._id){
+				if(proj === s.selectData.options[i].name){
 					s.currentProject = s.selectData.options[i]
 					s.calculateStats();
-					//calculateStats does NOT update the UI, including the project name. Need to figure out how to re-render UI
+					//calculateStats does NOT update the UI,need to add models to UI elements that will change
 				}
 			}
 		}
@@ -281,9 +277,7 @@ angular.module('app')
 			s.showcountform = true;
 			s.project._id = Math.random()
 			s.currentProject = new s.Project(s.project, s.currentUser);
-			console.log(s.currentProject)
 			s.projectList.push(s.currentProject)
-			console.log(s.projectList)
 			s.project = {};
 			s.showprojectform = false;
 			s.calculateStats();
@@ -308,10 +302,8 @@ angular.module('app')
 					if(s.users[i].name === s.user.name){
 						console.log("user exists, displaying data")
 						//display data and return out of the for loop
-						console.log(i + " name: " + s.user.name)
 						s.currentUser = s.user;
 						s.user = {};
-						console.log("currentUser: " + s.currentUser)
 						for(var j=0;j<s.projectList.length; j++){
 							if(s.projectList[j].ownerId === s.currentUser.name){
 								s.currentProject=s.projectList[j];
@@ -338,7 +330,6 @@ angular.module('app')
 				s.showloginform=false;
 				s.showprojectform = true;
 			}
-			//console.log(s.currentUser)
 			
 		}
 
