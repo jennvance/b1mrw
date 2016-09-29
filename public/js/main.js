@@ -43,12 +43,7 @@ angular.module('app')
 		s.avgWordsPerDayAllTime = 0;
 		s.avgWordsPerDayYear = 0;
 		s.avgWordsPerDayMonth = 0;
-		//initializing with no value = undefined; don't use
-		s.daysUntilGoal
-		s.currentGoalWordCount
-		s.wordsUntilGoal
-		s.wordsPerDaySinceStartingGoal
-		s.wordsPerDayToMeetGoal
+
 
 
 		s.User = function(user){
