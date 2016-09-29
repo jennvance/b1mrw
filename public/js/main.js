@@ -1,8 +1,26 @@
+//this single line can go in its own "module" file
 angular.module('app', []);
 
 angular.module('app')
-	.controller('wordCountroller', ['$scope', '$http', function($scope, $http){
+	.factory('jennsFactory'[function(){
+		var myFunction = function(){console.log('hi')}
+
+		return {
+			myFunction : myFunction
+		}
+	}])
+//naming conventions for different files:
+// wordCountroller.controller.js
+// jennsFactory.factory.js
+// app.module.js
+
+//controller should only contain things that have to talk to the DOM/View
+//everything else can go in a factory,etc
+angular.module('app')
+	.controller('wordCountroller', ['$scope', '$http', 'jennsFactory' function($scope, $http, jennsFactory){
 		var s = $scope;
+		//s.doStuff would be an event handler called in the View
+		s.doStuff = jennsFactory.myFunction
 		//hide/show values
 		s.showloginform=true;
 		s.showprojectform = false;
