@@ -1,5 +1,5 @@
-//this single line can go in its own "module" file
-angular.module('app', []);
+
+
 
 angular.module('app')
 	.factory('jennsFactory'[function(){
