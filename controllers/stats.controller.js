@@ -1,11 +1,13 @@
+
+
+
+
+
 //the purpose of a controller is to interpret business logic from a model and turn it into
 //a presentational format
 //a place to keep UI bindings in sync with model
 
-angular.module('app')
-	.controller('myController', function(){
 
-	})
 
 
 

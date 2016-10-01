@@ -1,14 +1,14 @@
+angular.module('app', [])
 
 
+// angular.module('app')
+// 	.factory('jennsFactory'[function(){
+// 		var myFunction = function(){console.log('hi')}
 
-angular.module('app')
-	.factory('jennsFactory'[function(){
-		var myFunction = function(){console.log('hi')}
-
-		return {
-			myFunction : myFunction
-		}
-	}])
+// 		return {
+// 			myFunction : myFunction
+// 		}
+// 	}])
 //naming conventions for different files:
 // wordCountroller.controller.js
 // jennsFactory.factory.js
@@ -16,11 +16,20 @@ angular.module('app')
 
 //controller should only contain things that have to talk to the DOM/View
 //everything else can go in a factory,etc
+// angular.module('app')
+// 	.controller('wordCountroller', ['$scope', '$http', 'jennsFactory' function($scope, $http, jennsFactory){
+		
+
+// 	}])
+
+
+
 angular.module('app')
-	.controller('wordCountroller', ['$scope', '$http', 'jennsFactory' function($scope, $http, jennsFactory){
-		var s = $scope;
+	.controller('wordCountroller', ['$scope', '$http', function($scope, $http){
+var s = $scope;
+
 		//s.doStuff would be an event handler called in the View
-		s.doStuff = jennsFactory.myFunction
+		//s.doStuff = jennsFactory.myFunction
 		//hide/show values
 		s.showloginform=true;
 		s.showprojectform = false;
