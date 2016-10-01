@@ -55,26 +55,26 @@ var s = $scope;
 
 
 
-		s.User = function(user){
-			this.name = user.name;
-			this.dateSignedUp = new Date();
-		}
+		// s.User = function(user){
+		// 	this.name = user.name;
+		// 	this.dateSignedUp = new Date();
+		// }
 
-		s.Project = function(project, user){
-			this._id = project._id;
-			this.ownerId = user.name;
-			this.name = project.name;
-			this.startDate = new Date();
-			this.wordGoal = project.wordGoal;
-			this.endDate = project.date;
-		}
+		// s.Project = function(project, user){
+		// 	this._id = project._id;
+		// 	this.ownerId = user.name;
+		// 	this.name = project.name;
+		// 	this.startDate = new Date();
+		// 	this.wordGoal = project.wordGoal;
+		// 	this.endDate = project.date;
+		// }
 
-		s.Count =function(count, project){
-			this.owner = project.ownerId;
-			this.projectId = project._id;
-			this.date = count.date;
-			this.wordCount = count.wordCount;
-		}
+		// s.Count =function(count, project){
+		// 	this.owner = project.ownerId;
+		// 	this.projectId = project._id;
+		// 	this.date = count.date;
+		// 	this.wordCount = count.wordCount;
+		// }
 //Helper functions for date calculations
 		function standardizeToUTC(date) {
 			var result = new Date(date);
@@ -249,6 +249,7 @@ var s = $scope;
 //Form submission functions
 
 		s.submitCount = function(){
+
 			console.log("date: ", s.count.date)
 			if (s.allCounts==false) {
 				s.currentCount = new s.Count(s.count, s.currentProject);
@@ -308,6 +309,12 @@ var s = $scope;
 		
 
 		s.submitLogin = function(){
+			$http.post('/submituser', s.newUser)
+				.then(function(returnData){
+					console.log(returnData.data)
+					//content of function goes here
+					//tk
+				})
 
 			//if users is empty, add new user
 			if(s.users==false){
