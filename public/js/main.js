@@ -1,35 +1,8 @@
 angular.module('app', [])
 
-
-// angular.module('app')
-// 	.factory('jennsFactory'[function(){
-// 		var myFunction = function(){console.log('hi')}
-
-// 		return {
-// 			myFunction : myFunction
-// 		}
-// 	}])
-//naming conventions for different files:
-// wordCountroller.controller.js
-// jennsFactory.factory.js
-// app.module.js
-
-//controller should only contain things that have to talk to the DOM/View
-//everything else can go in a factory,etc
-// angular.module('app')
-// 	.controller('wordCountroller', ['$scope', '$http', 'jennsFactory' function($scope, $http, jennsFactory){
-		
-
-// 	}])
-
-
-
 angular.module('app')
 	.controller('wordCountroller', ['$scope', '$http', function($scope, $http){
-var s = $scope;
-
-		//s.doStuff would be an event handler called in the View
-		//s.doStuff = jennsFactory.myFunction
+		var s = $scope;
 		//hide/show values
 		s.showloginform=true;
 		s.showprojectform = false;
@@ -54,27 +27,28 @@ var s = $scope;
 		s.avgWordsPerDayMonth = 0;
 
 
+		//Constructors
+		var User = function(user){
+			this.name = user.name;
+			this.dateSignedUp = new Date();
+		}
 
-		// s.User = function(user){
-		// 	this.name = user.name;
-		// 	this.dateSignedUp = new Date();
-		// }
+		var Project = function(project, user){
+			this._id = project._id;
+			this.ownerId = user.name;
+			this.name = project.name;
+			this.startDate = new Date();
+			this.wordGoal = project.wordGoal;
+			this.endDate = project.date;
+		}
 
-		// s.Project = function(project, user){
-		// 	this._id = project._id;
-		// 	this.ownerId = user.name;
-		// 	this.name = project.name;
-		// 	this.startDate = new Date();
-		// 	this.wordGoal = project.wordGoal;
-		// 	this.endDate = project.date;
-		// }
+		var Count =function(count, project){
+			this.owner = project.ownerId;
+			this.projectId = project._id;
+			this.date = count.date;
+			this.wordCount = count.wordCount;
+		}
 
-		// s.Count =function(count, project){
-		// 	this.owner = project.ownerId;
-		// 	this.projectId = project._id;
-		// 	this.date = count.date;
-		// 	this.wordCount = count.wordCount;
-		// }
 //Helper functions for date calculations
 		function standardizeToUTC(date) {
 			var result = new Date(date);
@@ -252,7 +226,7 @@ var s = $scope;
 
 			console.log("date: ", s.count.date)
 			if (s.allCounts==false) {
-				s.currentCount = new s.Count(s.count, s.currentProject);
+				s.currentCount = new Count(s.count, s.currentProject);
 				s.allCounts.push(s.currentCount);
 				s.count = {};
 				s.count.date = new Date();
@@ -265,7 +239,7 @@ var s = $scope;
 							console.log("diff")
 						}
 				}
-				s.count = new s.Count(s.count, s.currentProject);
+				s.count = new Count(s.count, s.currentProject);
 				s.allCounts.push(s.count);
 				s.count = {};
 				s.count.date = new Date();	
@@ -299,7 +273,7 @@ var s = $scope;
 		s.submitProject = function(){
 			s.showcountform = true;
 			s.project._id = Math.random()
-			s.currentProject = new s.Project(s.project, s.currentUser);
+			s.currentProject = new Project(s.project, s.currentUser);
 			s.projectList.push(s.currentProject)
 			s.project = {};
 			s.showprojectform = false;
@@ -309,17 +283,11 @@ var s = $scope;
 		
 
 		s.submitLogin = function(){
-			$http.post('/submituser', s.newUser)
-				.then(function(returnData){
-					console.log(returnData.data)
-					//content of function goes here
-					//tk
-				})
 
 			//if users is empty, add new user
 			if(s.users==false){
 				console.log("users is empty; creating first item")
-				s.currentUser = new s.User(s.user);
+				s.currentUser = new User(s.user);
 				s.users.push(s.currentUser)
 				s.user = {};
 				s.showloginform=false;
@@ -352,7 +320,7 @@ var s = $scope;
 				}
 				//if get to end of loop and no match, add new user
 				console.log("user doesn't exist, adding user to populated array")
-				s.currentUser = new s.User(s.user);
+				s.currentUser = new User(s.user);
 				s.users.push(s.currentUser)
 				
 				s.user = {};

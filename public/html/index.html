@@ -4,7 +4,10 @@
 	<title>Burn One Million Words</title>
 	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.css">
 	<link rel="stylesheet" type="text/css" href="/styles/style.css">
-
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular.js" type="text/javascript"></script>
+	<script src="/js/main.js" type="text/javascript"></script>
+	<script src="/js/constructors.js" type="text/javascript"></script>
+	<script src="/js/main.js" type="text/javascript"></script>
 </head>
 <body ng-controller="wordCountroller">
 	<div class="container">
@@ -69,16 +72,16 @@
 						<h4>Year average: {{avgWordsPerDayYear}}</h4>
 						<h4>Month average: {{avgWordsPerDayMonth}}</h4>
 					</div>
-					<button ng-click="showprojectform=true">Add New Goal</button>
-					<button ng-click="showloginform=true">Switch User</button>
+					<button ng-click="showprojectform=true; showcountform=false; showloginform=false">Add New Goal</button>
+					<button ng-click="showloginform=true; showcountform=false; showprojectform=false">Switch User</button>
 				</div>
 			</div>
 			<div class="col-md-3"></div>
 		</div>
 	</div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular.js" type="text/javascript"></script>
-<script src="../controllers/stats.controller.js" type="text/javascript"></script>
-<script src="/js/main.js" type="text/javascript"></script>
+
+
+
 
 
 
